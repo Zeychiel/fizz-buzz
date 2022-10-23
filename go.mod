@@ -1,4 +1,4 @@
-module bitbucket.og/codeTestLBC
+module testLBC
 
 go 1.18
 
