@@ -28,11 +28,12 @@ This endpoint should:
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 
-	"bitbucket.org/codeTestLBC/cmd/server/handlers"
+	"testLBC/cmd/server/handlers"
+
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -41,7 +42,9 @@ import (
 )
 
 const (
-	APIVersion = "1.0.0"
+	APIVersion    = "1.0.0"
+	debugEnvPath  = "../../.env"
+	errLoadingEnv = "Error loading .env file"
 )
 
 type MyServer struct {
@@ -49,7 +52,7 @@ type MyServer struct {
 }
 
 func main() {
-	fmt.Println("API Version : ", APIVersion)
+	log.Println("API Version : ", APIVersion)
 
 	// Load env
 	setEnv()
@@ -89,28 +92,23 @@ func main() {
 
 	http.Handle("/V1/", app.r)
 
-	fmt.Println("\n\U0001f37a\tListening")
 	port := ":" + os.Getenv("PORT")
+	log.Println("\U0001f37a\tListening on port", port)
 	if err := http.ListenAndServe(port, app.r); err != nil {
 		panic("Error: " + err.Error())
 	}
 }
 
-// Loads environment variables from a .env file
+// setEnv Loads environment variables from .env file
 func setEnv() {
-	// Check if env vars are already set
-	env := os.Getenv("ENV")
-	if env != "" {
-		fmt.Println("ENV:\t", env)
-	} else {
-		// LOAD env constants
-		fmt.Println("ENV:\t\t Local")
-		err := godotenv.Load()
-		if err != nil {
-			err := godotenv.Load("../../.env") /*DEBUGGING*/
+	// Check if the env vars are already set
+	env := os.Getenv("PORT")
+	if env == "" {
+		// LOAD env
+		if err := godotenv.Load(); err != nil {
+			err := godotenv.Load(debugEnvPath) // Try the debugging path for the env file
 			if err != nil {
-				// logger.Fatal("Error loading .env file")
-				fmt.Println("Error loading .env file")
+				log.Fatal(errLoadingEnv)
 			}
 		}
 	}

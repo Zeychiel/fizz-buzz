@@ -2,10 +2,7 @@ module testLBC
 
 go 1.18
 
-replace bitbucket.org/codeTestLBC => ../codeTestLBC
-
 require (
-	bitbucket.org/codeTestLBC v0.0.0-00010101000000-000000000000
 	github.com/codegangsta/negroni v1.0.0
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0

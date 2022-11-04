@@ -5,13 +5,15 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"testLBC/internal/fizzBuzz"
 
-	"bitbucket.org/codeTestLBC/internal/fizzBuzz"
 	"github.com/gorilla/mux"
 )
 
 const (
-	maxLimit = 1000
+	maxLimit  = 1000
+	noStats   = "No stats yet"
+	itemCalls = "Item %s called %d times"
 )
 
 var (
@@ -42,11 +44,11 @@ func GetFizzBuzzHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Inputs validation
 	if int1 < 1 || int2 < 1 {
-		NewAPIError(ErrBadRequest.Code, "Nice try !").Throw(w) // This error would be standardized in a larger project
+		NewAPIError(http.StatusBadRequest, "Nice try !").Throw(w) // This error would be standardized in a larger project
 		return
 	}
 	if limit > maxLimit {
-		NewAPIError(ErrBadRequest.Code, "Let's say that the limit is "+strconv.Itoa(maxLimit)+", ok ?").Throw(w) // This error would be standardized in a larger project
+		NewAPIError(http.StatusBadRequest, "Let's say that the limit is "+strconv.Itoa(maxLimit)+", ok ?").Throw(w) // This error would be standardized in a larger project
 		return
 	}
 	// Edge case
@@ -57,7 +59,7 @@ func GetFizzBuzzHandler(w http.ResponseWriter, r *http.Request) {
 	// Call the internal function
 	rslt, err := fizzBuzz.GetFizzBuzz(int1, int2, limit, str1, str2)
 	if err != nil {
-		NewAPIError(ErrBadRequest.Code, err.Error()).Throw(w)
+		NewAPIError(http.StatusBadRequest, err.Error()).Throw(w)
 		return
 	}
 	WriteResponse(w, rslt)
@@ -84,8 +86,8 @@ func GetMaxHandler(w http.ResponseWriter, r *http.Request) {
 
 	// And max value can be obtained
 	if len(ss) > 0 {
-		WriteResponse(w, fmt.Sprintf("Item %s called %d times", ss[0].Key, ss[0].Value))
+		WriteResponse(w, fmt.Sprintf(itemCalls, ss[0].Key, ss[0].Value))
 		return
 	}
-	WriteResponse(w, "No stats yet")
+	WriteResponse(w, noStats)
 }

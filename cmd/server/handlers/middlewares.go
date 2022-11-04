@@ -52,14 +52,3 @@ var TotalRequests = prometheus.NewCounterVec(
 	},
 	[]string{"params"},
 )
-
-// funcCustomPromCounterMiddleware counts the requests to get the most frequent one
-//func CustomPromCounterMiddleware(next http.Handler) http.Handler {
-//	hdFailures = prometheus.NewCounterVec(
-//		prometheus.CounterOpts{
-//			Name: "hd_errors_total",
-//			Help: "Number of hard-disk errors.",
-//		},
-//		[]string{"device"},
-//	)
-//}
